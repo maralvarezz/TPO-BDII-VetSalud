@@ -1,0 +1,17 @@
+id_propietario,nombre,apellido,dni,email,telefono,ciudad,provincia
+C001,Ana,Rodriguez,30456789,ana@gmail.com,1145001234,Buenos Aires,Buenos Aires
+C002,Roberto,Diaz,27654321,rob@gmail.com,1156002345,Rosario,Santa Fe
+C003,Valentina,Molina,41234567,vale@gmail.com,1167003456,Cordoba,Cordoba
+C004,Diego,Herrera,35789012,diego@gmail.com,1178004567,Mendoza,Mendoza
+C005,Paula,Sosa,38012345,paula@gmail.com,1189005678,La Plata,Buenos Aires
+C006,Tomas,Juarez,42345678,tomas@gmail.com,1190006789,Salta,Salta
+C007,Lucia,Ferreyra,31555111,lucia.ferreyra@gmail.com,1122334401,Buenos Aires,Buenos Aires
+C008,Martin,Quiroga,29888777,martin.quiroga@gmail.com,1122334402,Mar del Plata,Buenos Aires
+C009,Carla,Suarez,33444555,carla.suarez@gmail.com,1122334403,Neuquen,Neuquen
+C010,Javier,Acosta,28777111,javier.acosta@gmail.com,1122334404,San Miguel de Tucuman,Tucuman
+C011,Milagros,Peralta,40111222,milagros.peralta@gmail.com,1122334405,Cordoba,Cordoba
+C012,Franco,Benitez,35666777,franco.benitez@gmail.com,1122334406,Rosario,Santa Fe
+C013,Julieta,Navarro,38999111,julieta.navarro@gmail.com,1122334407,Parana,Entre Rios
+C014,Nicolas,Ledesma,32123456,nicolas.ledesma@gmail.com,1122334408,Mendoza,Mendoza
+C015,Sofia,Ruiz,41888776,sofia.ruiz@gmail.com,1122334409,Salta,Salta
+C016,Emiliano,Paz,30000123,emiliano.paz@gmail.com,1122334410,Santa Rosa,La Pampa

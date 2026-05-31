@@ -1,0 +1,17 @@
+id_producto,nombre,categoria,unidades,precio_unit,vencimiento,proveedor
+PRD001,Amoxicilina 250mg,Antibiotico,120,850,2026-06-30,VetFarma SA
+PRD002,Meloxicam 2mg,Antiinflamatorio,85,1200,2026-09-15,BioVet SRL
+PRD003,Ivermectina 1%,Antiparasitario,60,950,2026-03-20,VetFarma SA
+PRD004,Frontline Spray,Antiparasitario,40,3500,2027-01-10,MediAnimal
+PRD005,Suero fisiologico 1L,Solucion,200,400,2026-12-01,BioVet SRL
+PRD006,Ketamina 10%,Anestesico,25,5800,2026-05-01,MediAnimal
+PRD007,Cefalexina 500mg,Antibiotico,35,1600,2026-10-10,VetFarma SA
+PRD008,Prednisolona 20mg,Antiinflamatorio,18,1900,2026-08-14,BioVet SRL
+PRD009,Shampoo terapeutico,Dermatologico,42,2600,2027-02-01,AnimalCare
+PRD010,Jeringa 5ml,Insumo,300,120,2028-01-01,MedSupply
+PRD011,Gasas esteriles,Insumo,150,90,2027-09-09,MedSupply
+PRD012,Enrofloxacina 50mg,Antibiotico,48,2100,2026-11-21,VetFarma SA
+PRD013,Collar isabelino,Accesorio,22,1400,2028-03-15,PetSafe
+PRD014,Omeprazol 10mg,Gastroprotector,55,1300,2027-05-30,BioVet SRL
+PRD015,Vitamina K,Suplemento,12,1750,2026-07-19,AnimalCare
+PRD016,Solucion otica,Otologico,28,2400,2026-12-11,MediAnimal

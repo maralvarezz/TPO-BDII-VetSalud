@@ -1,0 +1,19 @@
+id_consulta,id_paciente,id_vet,fecha,motivo,diagnostico,costo,estado
+CON001,P001,V001,2025-10-05,Control anual,Sano,4500,Cerrada
+CON002,P002,V003,2025-10-12,Alergia cutanea,Dermatitis atopica,6200,Cerrada
+CON003,P003,V002,2025-09-20,Fractura pata,Fractura radio,15000,Cerrada
+CON004,P004,V001,2025-11-01,Perdida de apetito,Estres ambiental,3800,Seguimiento
+CON005,P005,V005,2025-11-10,Vomitos recurrentes,Gastritis,5500,Seguimiento
+CON006,P006,V003,2025-11-18,Revision piel,Eccema,4100,Cerrada
+CON007,P001,V001,2025-12-02,Control post-vacuna,Sin novedades,2000,Cerrada
+CON008,P007,V002,2025-12-10,Extraccion dentaria,Periodontitis,12000,Cerrada
+CON009,P009,V006,2026-04-05,Control general,Sano,5200,Cerrada
+CON010,P010,V008,2026-04-18,Picazon persistente,Dermatitis alergica,6900,Seguimiento
+CON011,P011,V007,2026-05-03,Cojera leve,Esguince,8800,Cerrada
+CON012,P012,V009,2026-05-07,Falta de apetito,Estres digestivo,4700,Seguimiento
+CON013,P013,V010,2026-05-12,Chequeo nutricional,Sobrepeso,3500,Cerrada
+CON014,P014,V011,2026-05-15,Control anual,Sano,4900,Cerrada
+CON015,P015,V012,2026-05-20,Dificultad respiratoria,Infeccion respiratoria,7300,Cerrada
+CON016,P016,V013,2026-05-23,Revision postquirurgica,Buena evolucion,4100,Seguimiento
+CON017,P004,V014,2026-05-26,Lesion en piel,Dermatitis atopica,6400,Cerrada
+CON018,P008,V015,2026-05-29,Revision de pico,Maloclusion dental,5400,Cerrada

@@ -1,0 +1,19 @@
+id_paciente,nombre,especie,raza,fecha_nac,id_propietario,activo
+P001,Firulais,Perro,Labrador,2019-04-12,C001,True
+P002,Michi,Gato,Siames,2021-07-03,C002,True
+P003,Coco,Perro,Beagle,2018-11-20,C001,False
+P004,Nube,Conejo,Angora,2022-02-14,C003,True
+P005,Rex,Perro,Pastor Aleman,2020-09-08,C004,True
+P006,Luna,Gato,Persa,2023-01-17,C005,True
+P007,Pipo,Perro,Poodle,2017-06-30,C002,True
+P008,Bambu,Ave,Cacatua,2021-03-22,C006,True
+P009,Mora,Perro,Golden Retriever,2022-05-10,C007,True
+P010,Simba,Gato,British Shorthair,2020-08-21,C007,True
+P011,Kira,Perro,Border Collie,2021-12-02,C008,True
+P012,Toby,Cobayo,Americano,2023-04-19,C009,True
+P013,Lola,Gato,Maine Coon,2019-10-11,C010,True
+P014,Bruno,Perro,Boxer,2018-01-30,C011,True
+P015,Olivia,Ave,Canario,2024-02-09,C012,True
+P016,Teo,Gato,Sphynx,2022-06-27,C013,True
+P017,Nina,Conejo,Mini Lop,2023-09-13,C014,True
+P018,Dante,Perro,Salchicha,2021-11-05,C015,True
