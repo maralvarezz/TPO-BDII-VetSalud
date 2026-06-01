@@ -32,6 +32,27 @@ python3 scripts/loaders/load_mongo.py
 python3 scripts/loaders/load_neo4j.py
 ```
 
+## Ejecutar consultas
+
+La idea es tener una funcion por consulta dentro de `src/services/` y un runner unico:
+
+```bash
+python3 scripts/run_query.py 1
+```
+
+Tambien acepta nombres como:
+
+```bash
+python3 scripts/run_query.py query_01
+```
+
+El runner queda preparado para consultas sobre:
+
+- `MongoDB`
+- `Neo4j`
+
+Cada consulta se registra una sola vez en `scripts/run_query.py`, indicando que motor usa y que funcion ejecuta.
+
 ## Variables de entorno
 
 El proyecto usa estas variables:
