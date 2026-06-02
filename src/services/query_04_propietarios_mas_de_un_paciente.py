@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from src.utils.neo4j import get_neo4j_driver
 
-
+# Propietarios con más de un paciente registrado
 def obtener_propietarios_con_mas_de_un_paciente() -> list[dict]:
     query = """
     MATCH (p:Propietario)-[:POSEE]->(pac:Paciente)

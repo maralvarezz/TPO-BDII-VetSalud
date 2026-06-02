@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from src.utils.mongo import get_mongo_database
 
-
+# Pacientes activos con todos sus datos de propietario
 def obtener_pacientes_activos_con_propietario() -> list[dict]:
     db = get_mongo_database()
 

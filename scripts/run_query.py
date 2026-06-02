@@ -17,6 +17,9 @@ if str(ROOT_DIR) not in sys.path:
 from src.services.query_01_pacientes_activos import (  # noqa: E402
     obtener_pacientes_activos_con_propietario,
 )
+from src.services.query_02_consultas_abiertas import (  # noqa: E402
+    obtener_consultas_abiertas_con_veterinario_y_costo,
+)
 from src.services.query_04_propietarios_mas_de_un_paciente import (  # noqa: E402
     obtener_propietarios_con_mas_de_un_paciente,
 )
@@ -41,17 +44,12 @@ QUERY_SPECS = {
         engine="mongodb",
         handler=obtener_pacientes_activos_con_propietario,
     ),
-    "query_01": QuerySpec(
-        name="query_01",
+    "2": QuerySpec(
+        name="query_02",
         engine="mongodb",
-        handler=obtener_pacientes_activos_con_propietario,
+        handler=obtener_consultas_abiertas_con_veterinario_y_costo,
     ),
     "4": QuerySpec(
-        name="query_04",
-        engine="neo4j",
-        handler=obtener_propietarios_con_mas_de_un_paciente,
-    ),
-    "query_04": QuerySpec(
         name="query_04",
         engine="neo4j",
         handler=obtener_propietarios_con_mas_de_un_paciente,
@@ -60,18 +58,14 @@ QUERY_SPECS = {
 
 
 def print_available_queries() -> None:
-    printed = set()
     for key, spec in QUERY_SPECS.items():
-        if spec.name in printed:
-            continue
-        printed.add(spec.name)
-        print(f"- {key} / {spec.name} [{spec.engine}]")
+        print(f"- {key} [{spec.engine}]")
 
 
 def main() -> None:
     if len(sys.argv) != 2:
-        print("Uso: python3 scripts/run_query.py <numero_o_nombre_query>", file=sys.stderr)
-        print("Ejemplos: 1 | query_01", file=sys.stderr)
+        print("Uso: python3 scripts/run_query.py <numero_query>", file=sys.stderr)
+        print("Ejemplos: 1 | 2 | 4", file=sys.stderr)
         print("Queries disponibles:", file=sys.stderr)
         print_available_queries()
         sys.exit(1)

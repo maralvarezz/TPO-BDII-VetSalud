@@ -40,12 +40,6 @@ La idea es tener una funcion por consulta dentro de `src/services/` y un runner 
 python3 scripts/run_query.py 1
 ```
 
-Tambien acepta nombres como:
-
-```bash
-python3 scripts/run_query.py query_01
-```
-
 El runner queda preparado para consultas sobre:
 
 - `MongoDB`
