@@ -37,7 +37,7 @@ python3 scripts/loaders/load_neo4j.py
 La idea es tener una funcion por consulta dentro de `src/services/` y un runner unico:
 
 ```bash
-python3 scripts/run_query.py 1 [optional_args]
+python3 scripts/run_query.py <query_num> [optional_args]
 ```
 
 El runner queda preparado para consultas sobre:

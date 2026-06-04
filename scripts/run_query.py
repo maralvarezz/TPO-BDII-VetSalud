@@ -33,6 +33,15 @@ from src.services.query_05_veterinarios_activos_ultimos_60_dias import (  # noqa
 from src.services.query_06_pacientes_vacunas_vencidas import (  # noqa: E402
     obtener_pacientes_con_vacunas_vencidas,
 )
+from src.services.query_07_top_diagnosticos import (  # noqa: E402
+    obtener_top_5_diagnosticos_mas_frecuentes,
+)
+from src.services.query_08_stock_bajo import (  # noqa: E402
+    obtener_stock_productos_menos_de_50_unidades,
+)
+from src.services.query_09_consultas_control_bajo_costo import (  # noqa: E402
+    obtener_consultas_control_con_costo_menor_a_5000,
+)
 
 
 @dataclass(frozen=True)
@@ -79,6 +88,21 @@ QUERY_SPECS = {
         engine="mongodb",
         handler=obtener_pacientes_con_vacunas_vencidas,
     ),
+    "7": QuerySpec(
+        name="query_07",
+        engine="mongodb",
+        handler=obtener_top_5_diagnosticos_mas_frecuentes,
+    ),
+    "8": QuerySpec(
+        name="query_08",
+        engine="mongodb",
+        handler=obtener_stock_productos_menos_de_50_unidades,
+    ),
+    "9": QuerySpec(
+        name="query_09",
+        engine="mongodb",
+        handler=obtener_consultas_control_con_costo_menor_a_5000,
+    ),
 }
 
 
@@ -90,7 +114,7 @@ def print_available_queries() -> None:
 def main() -> None:
     if len(sys.argv) not in (2, 3):
         print("Uso: python3 scripts/run_query.py <numero_query> [id_paciente]", file=sys.stderr)
-        print("Ejemplos: 1 | 2 | 3 P001 | 4 | 5 | 6", file=sys.stderr)
+        print("Ejemplos: 1 | 2 | 3 P001 | 4 | 5 | 6 | 7 | 8 | 9", file=sys.stderr)
         print("Queries disponibles:", file=sys.stderr)
         print_available_queries()
         sys.exit(1)
