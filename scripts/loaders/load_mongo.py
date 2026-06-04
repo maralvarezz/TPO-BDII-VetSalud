@@ -141,6 +141,68 @@ def recreate_collection(db, name: str, docs: list[dict[str, object]]) -> None:
         collection.insert_many(docs)
 
 
+def recreate_views(db) -> None:
+    view_name = "vista_ingresos_veterinario_mensual"
+    db.drop_collection(view_name)
+    db.create_collection(
+        view_name,
+        viewOn="consultas",
+        pipeline=[
+            {
+                "$group": {
+                    "_id": {
+                        "id_vet": "$id_vet",
+                        "anio": {"$year": "$fecha"},
+                        "mes": {"$month": "$fecha"},
+                    },
+                    "ingresos_totales": {"$sum": "$costo"},
+                    "cantidad_consultas": {"$sum": 1},
+                }
+            },
+            {
+                "$lookup": {
+                    "from": "veterinarios",
+                    "localField": "_id.id_vet",
+                    "foreignField": "id_vet",
+                    "as": "veterinario",
+                }
+            },
+            {"$unwind": "$veterinario"},
+            {
+                "$project": {
+                    "_id": 0,
+                    "anio": "$_id.anio",
+                    "mes": "$_id.mes",
+                    "periodo": {
+                        "$concat": [
+                            {
+                                "$cond": [
+                                    {"$lt": ["$_id.mes", 10]},
+                                    {"$concat": ["0", {"$toString": "$_id.mes"}]},
+                                    {"$toString": "$_id.mes"},
+                                ]
+                            },
+                            "/",
+                            {"$toString": "$_id.anio"},
+                        ]
+                    },
+                    "veterinario": {
+                        "id_vet": "$veterinario.id_vet",
+                        "nombre": "$veterinario.nombre",
+                        "apellido": "$veterinario.apellido",
+                        "matricula": "$veterinario.matricula",
+                        "especialidad": "$veterinario.especialidad",
+                        "sucursal": "$veterinario.sucursal",
+                        "activo": "$veterinario.activo",
+                    },
+                    "cantidad_consultas": 1,
+                    "ingresos_totales": 1,
+                }
+            },
+        ],
+    )
+
+
 def main() -> None:
     load_dotenv()
     mongo_uri = os.getenv("MONGO_URI", "mongodb://localhost:27017/")
@@ -155,6 +217,7 @@ def main() -> None:
     recreate_collection(db, "consultas", transform_consultas(read_csv("consultas.csv")))
     recreate_collection(db, "vacunaciones", transform_vacunaciones(read_csv("vacunaciones.csv")))
     recreate_collection(db, "stock_farmaceutico", transform_stock(read_csv("stock_farmaceutico.csv")))
+    recreate_views(db)
 
     print(f"Carga MongoDB completa en base '{mongo_db}'.")
 

@@ -42,6 +42,16 @@ from src.services.query_08_stock_bajo import (  # noqa: E402
 from src.services.query_09_consultas_control_bajo_costo import (  # noqa: E402
     obtener_consultas_control_con_costo_menor_a_5000,
 )
+from src.services.query_10_pacientes_por_sucursal import (  # noqa: E402
+    DEFAULT_SUCURSAL,
+    obtener_pacientes_de_sucursal,
+)
+from src.services.query_11_ingresos_veterinario_mes_actual import (  # noqa: E402
+    obtener_ingresos_totales_por_veterinario_mes_actual,
+)
+from src.services.query_12_propietarios_sin_consultas_ultimo_anio import (  # noqa: E402
+    obtener_propietarios_sin_consultas_ultimo_anio,
+)
 
 
 @dataclass(frozen=True)
@@ -103,6 +113,21 @@ QUERY_SPECS = {
         engine="mongodb",
         handler=obtener_consultas_control_con_costo_menor_a_5000,
     ),
+    "10": QuerySpec(
+        name="query_10",
+        engine="neo4j",
+        handler=obtener_pacientes_de_sucursal,
+    ),
+    "11": QuerySpec(
+        name="query_11",
+        engine="mongodb",
+        handler=obtener_ingresos_totales_por_veterinario_mes_actual,
+    ),
+    "12": QuerySpec(
+        name="query_12",
+        engine="neo4j",
+        handler=obtener_propietarios_sin_consultas_ultimo_anio,
+    ),
 }
 
 
@@ -113,8 +138,8 @@ def print_available_queries() -> None:
 
 def main() -> None:
     if len(sys.argv) not in (2, 3):
-        print("Uso: python3 scripts/run_query.py <numero_query> [id_paciente]", file=sys.stderr)
-        print("Ejemplos: 1 | 2 | 3 P001 | 4 | 5 | 6 | 7 | 8 | 9", file=sys.stderr)
+        print("Uso: python3 scripts/run_query.py <numero_query> [argumento]", file=sys.stderr)
+        print("Ejemplos: 1 | 3 P001 | 10 Palermo | 11 05/2026 | 12", file=sys.stderr)
         print("Queries disponibles:", file=sys.stderr)
         print_available_queries()
         sys.exit(1)
@@ -128,14 +153,21 @@ def main() -> None:
         print_available_queries()
         sys.exit(1)
 
-    if len(sys.argv) == 3 and query_id != "3":
-        print("El parametro id_paciente solo aplica a la query 3.", file=sys.stderr)
+    queries_con_argumento = {"3", "10", "11"}
+    if len(sys.argv) == 3 and query_id not in queries_con_argumento:
+        print("Esta query no recibe argumentos adicionales.", file=sys.stderr)
         sys.exit(1)
 
     try:
         if query_id == "3":
             id_paciente = sys.argv[2] if len(sys.argv) == 3 else DEFAULT_ID_PACIENTE
             resultados = spec.handler(id_paciente)
+        elif query_id == "10":
+            sucursal = sys.argv[2] if len(sys.argv) == 3 else DEFAULT_SUCURSAL
+            resultados = spec.handler(sucursal)
+        elif query_id == "11":
+            periodo = sys.argv[2] if len(sys.argv) == 3 else None
+            resultados = spec.handler(periodo)
         else:
             resultados = spec.handler()
     except PyMongoError as exc:

@@ -40,6 +40,24 @@ La idea es tener una funcion por consulta dentro de `src/services/` y un runner 
 python3 scripts/run_query.py <query_num> [optional_args]
 ```
 
+Ejemplo query 10, pacientes de una sucursal a traves de veterinarios:
+
+```bash
+python3 scripts/run_query.py 10 Palermo
+```
+
+Ejemplo query 11, ingresos por veterinario en un mes:
+
+```bash
+python3 scripts/run_query.py 11 05/2026
+```
+
+Ejemplo query 12, propietarios sin consultas en el ultimo anio:
+
+```bash
+python3 scripts/run_query.py 12
+```
+
 El runner queda preparado para consultas sobre:
 
 - `MongoDB`
