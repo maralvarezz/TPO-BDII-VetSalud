@@ -65,6 +65,19 @@ El runner queda preparado para consultas sobre:
 
 Cada consulta se registra una sola vez en `scripts/run_query.py`, indicando que motor usa y que funcion ejecuta.
 
+## Interfaz web
+
+Tambien hay una interfaz web inicial sobre FastAPI:
+
+```bash
+uvicorn app.main:app --reload
+```
+
+Luego se puede abrir:
+
+- `http://127.0.0.1:8000/`
+- `http://127.0.0.1:8000/docs`
+
 ## Variables de entorno
 
 El proyecto usa estas variables:

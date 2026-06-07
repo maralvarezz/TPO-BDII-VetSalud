@@ -6,7 +6,15 @@ from src.utils.neo4j import get_neo4j_driver
 def obtener_propietarios_con_mas_de_un_paciente() -> list[dict]:
     query = """
     MATCH (p:Propietario)-[:POSEE]->(pac:Paciente)
-    WITH p, count(pac) AS cantidad_pacientes, collect(pac.nombre) AS pacientes
+    WITH p,
+      count(pac) AS cantidad_pacientes,
+      collect({
+        id_paciente: pac.id_paciente,
+        nombre: pac.nombre,
+        especie: pac.especie,
+        raza: pac.raza,
+        activo: pac.activo
+      }) AS pacientes
     WHERE cantidad_pacientes > 1
     RETURN
       p.id_propietario AS id_propietario,

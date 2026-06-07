@@ -1,0 +1,162 @@
+{% macro render_value(value) %}
+  {% if value is mapping %}
+    <div class="space-y-3">
+      {% for subkey, subvalue in value.items() %}
+      <div class="rounded-2xl border border-white/10 bg-slate-950/40 p-3">
+        <div class="mb-2 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">{{ subkey | replace("_", " ") }}</div>
+        {{ render_value(subvalue) }}
+      </div>
+      {% endfor %}
+    </div>
+  {% elif value is sequence and value is not string %}
+    {% if value|length == 0 %}
+      <div class="rounded-xl bg-slate-950/40 px-3 py-2 text-sm text-slate-400">Sin datos</div>
+    {% else %}
+      <div class="flex flex-wrap gap-2">
+        {% for item in value %}
+          {% if item is mapping %}
+            <div class="w-full rounded-2xl border border-white/10 bg-slate-950/40 p-3">
+              {{ render_value(item) }}
+            </div>
+          {% elif item is sequence and item is not string %}
+            <div class="w-full rounded-2xl border border-white/10 bg-slate-950/40 p-3">
+              {{ render_value(item) }}
+            </div>
+          {% else %}
+            <span class="inline-flex rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm text-slate-200">{{ item }}</span>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% else %}
+    <div class="rounded-xl bg-white/5 px-3 py-2 text-sm leading-6 text-slate-100">{{ value }}</div>
+  {% endif %}
+{% endmacro %}
+
+<section class="space-y-4" data-selected-query="{{ spec.id }}">
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <div>
+      <div class="flex items-center gap-3">
+        <span class="rounded-full px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] {% if spec.engine == 'mongodb' %}bg-emerald-400/15 text-emerald-200{% else %}bg-sky-400/15 text-sky-200{% endif %}">
+          {{ spec.engine }}
+        </span>
+        <span class="text-sm text-slate-400">Query {{ spec.id }}</span>
+      </div>
+      <h3 class="mt-2 text-2xl font-black text-white">{{ spec.title }}</h3>
+      <p class="mt-1 text-sm text-slate-400">{{ spec.description }}</p>
+    </div>
+    {% if resultados_ui is not none %}
+    <div class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-right">
+      <div class="text-xs uppercase tracking-[0.2em] text-slate-400">Registros</div>
+      <div class="text-2xl font-black text-white">
+        {% if resultados_ui is mapping %}1{% else %}{{ resultados_ui|length }}{% endif %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  {% if error %}
+  <div class="rounded-[1.5rem] border border-red-400/20 bg-red-500/10 p-5 text-red-100">
+    <div class="text-sm font-semibold uppercase tracking-[0.18em] text-red-200">Error</div>
+    <p class="mt-2 text-sm leading-6">{{ error }}</p>
+  </div>
+  {% else %}
+  <div class="rounded-[1.5rem] border border-white/10 bg-slate-950/50 p-2">
+    <div class="mb-4 flex gap-2 p-2">
+      <button class="result-tab active rounded-2xl px-4 py-2 text-sm font-semibold" data-tab="pretty">Vista demo</button>
+      {% if graph_data %}
+      <button class="result-tab rounded-2xl px-4 py-2 text-sm font-semibold" data-tab="graph">Vista grafo</button>
+      {% endif %}
+      <button class="result-tab rounded-2xl px-4 py-2 text-sm font-semibold" data-tab="json">Vista JSON</button>
+    </div>
+
+    <div data-panel="pretty" class="result-tab-panel space-y-4 p-2">
+      {% if resultados_ui is mapping %}
+      <div class="space-y-4">
+        {% for key, value in resultados_ui.items() %}
+        <article class="rounded-[1.5rem] border border-white/10 bg-white/5 p-4 shadow-lg shadow-black/10">
+          <div class="mb-3 flex items-center justify-between gap-3">
+            <div class="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">{{ key | replace("_", " ") }}</div>
+          </div>
+          {{ render_value(value) }}
+        </article>
+        {% endfor %}
+      </div>
+      {% elif resultados_ui %}
+      <div class="space-y-4">
+        {% if resultados_ui|length > 1 %}
+        <div class="record-navigator rounded-[1.5rem] border border-white/10 bg-white/5 p-4" data-record-count="{{ resultados_ui|length }}">
+          <div class="mb-3 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div>
+              <div class="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Navegación de registros</div>
+              <div class="mt-1 text-sm text-slate-300">Elegí qué registro querés inspeccionar en detalle.</div>
+            </div>
+            <div class="flex items-center gap-2">
+              <button type="button" class="record-nav-button rounded-xl border border-white/10 bg-slate-950/60 px-3 py-2 text-sm text-slate-200" data-record-prev>
+                Anterior
+              </button>
+              <div class="rounded-xl bg-slate-950/60 px-3 py-2 text-sm text-slate-200">
+                <span data-record-current>1</span> / <span>{{ resultados_ui|length }}</span>
+              </div>
+              <button type="button" class="record-nav-button rounded-xl border border-white/10 bg-slate-950/60 px-3 py-2 text-sm text-slate-200" data-record-next>
+                Siguiente
+              </button>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap gap-2">
+            {% for item in resultados_ui %}
+            <button
+              type="button"
+              class="record-chip rounded-full border border-white/10 bg-slate-950/60 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.16em] text-slate-300"
+              data-record-chip="{{ loop.index0 }}"
+            >
+              Registro {{ loop.index }}
+            </button>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+        {% for item in resultados_ui %}
+        <article class="record-card rounded-[1.5rem] border border-white/10 bg-white/5 p-4 shadow-lg shadow-black/10{% if loop.index0 > 0 %} hidden{% endif %}" data-record-card="{{ loop.index0 }}">
+          <div class="mb-4 flex items-center justify-between gap-3">
+            <div class="inline-flex items-center gap-2 rounded-full bg-white/5 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-slate-300">
+              Registro
+              <span class="rounded-full bg-slate-950/60 px-2 py-0.5 text-white">{{ loop.index }}</span>
+            </div>
+          </div>
+          <div class="grid gap-3 md:grid-cols-2">
+            {% for key, value in item.items() %}
+            <div class="rounded-2xl border border-white/10 bg-slate-950/35 p-3">
+              <div class="mb-2 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">{{ key | replace("_", " ") }}</div>
+              {{ render_value(value) }}
+            </div>
+            {% endfor %}
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="rounded-3xl border border-white/10 bg-white/5 p-6 text-sm text-slate-300">La consulta no devolvió resultados.</div>
+      {% endif %}
+    </div>
+
+    {% if graph_data %}
+    <div data-panel="graph" class="result-tab-panel hidden p-2">
+      <div class="mb-3 rounded-2xl border border-sky-400/20 bg-sky-400/10 px-4 py-3 text-sm text-sky-100">
+        Grafo interactivo de relaciones. Arrastrá nodos, acercá y alejá para explorar la estructura.
+      </div>
+      <div
+        class="graph-canvas h-[540px] overflow-hidden rounded-[1.5rem] border border-white/10 bg-slate-950/80"
+        data-graph='{{ graph_data | tojson }}'
+      ></div>
+    </div>
+    {% endif %}
+
+    <div data-panel="json" class="result-tab-panel hidden p-2">
+      <pre class="max-h-[540px] overflow-auto rounded-[1.5rem] border border-white/10 bg-slate-950/80 p-4 text-sm leading-6 text-slate-200">{{ payload_json }}</pre>
+    </div>
+  </div>
+  {% endif %}
+</section>
