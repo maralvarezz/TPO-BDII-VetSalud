@@ -37,7 +37,7 @@ python3 scripts/loaders/load_neo4j.py
 La idea es tener una funcion por consulta dentro de `src/services/` y un runner unico:
 
 ```bash
-python3 scripts/run_query.py <query_num> [optional_args]
+python3 scripts/run_query.py <query_num> [argumentos]
 ```
 
 Ejemplo query 10, pacientes de una sucursal a traves de veterinarios:
@@ -56,6 +56,27 @@ Ejemplo query 12, propietarios sin consultas en el ultimo anio:
 
 ```bash
 python3 scripts/run_query.py 12
+```
+
+Ejemplo query 13, ABM de propietarios:
+
+```bash
+python3 scripts/run_query.py 13 alta '{"id_propietario":"C999","nombre":"Lucia","apellido":"Perez","dni":"40111222","email":"lucia@gmail.com","telefono":"1155554444","ciudad":"Buenos Aires","provincia":"Buenos Aires"}'
+python3 scripts/run_query.py 13 modificacion '{"id_propietario":"C999","telefono":"1166667777","ciudad":"La Plata"}'
+python3 scripts/run_query.py 13 baja '{"id_propietario":"C999"}'
+```
+
+Ejemplo query 14, registro de consulta con validacion de paciente y veterinario:
+
+```bash
+python3 scripts/run_query.py 14 '{"id_consulta":"CON999","id_paciente":"P001","id_vet":"V001","fecha":"2026-06-08","motivo":"Control","diagnostico":"Sano","costo":5000,"estado":"Cerrada"}'
+```
+
+Ejemplo query 15, decremento de stock de producto:
+
+```bash
+python3 scripts/run_query.py 15 PRD001 2
+python3 scripts/run_query.py 15 '[{"id_producto":"PRD001","cantidad":2},{"id_producto":"PRD004","cantidad":1}]'
 ```
 
 El runner queda preparado para consultas sobre:
