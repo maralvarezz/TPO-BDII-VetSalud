@@ -20,6 +20,8 @@ docker compose up -d
 python3 -m pip install -r requirements.txt
 ```
 
+Si usas un entorno virtual, activalo antes de instalar las dependencias y de ejecutar el proyecto.
+
 4. Cargar datos en MongoDB:
 
 ```bash
@@ -91,8 +93,10 @@ Cada consulta se registra una sola vez en `scripts/run_query.py`, indicando que 
 Tambien hay una interfaz web inicial sobre FastAPI:
 
 ```bash
-uvicorn app.main:app --reload
+python3 -m uvicorn app.main:app --reload
 ```
+
+Si queres usar el comando `uvicorn` directo, primero tenes que tener las dependencias instaladas en el entorno activo.
 
 Luego se puede abrir:
 
