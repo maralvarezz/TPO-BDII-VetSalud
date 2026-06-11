@@ -52,6 +52,16 @@ from src.services.query_11_ingresos_veterinario_mes_actual import (  # noqa: E40
 from src.services.query_12_propietarios_sin_consultas_ultimo_anio import (  # noqa: E402
     obtener_propietarios_sin_consultas_ultimo_anio,
 )
+from src.services.query_13_abm_propietarios import (  # noqa: E402
+    ejecutar_abm_propietario,
+)
+from src.services.query_14_registrar_consulta import (  # noqa: E402
+    registrar_nueva_consulta_desde_json,
+)
+from src.services.query_15_actualizar_stock import (  # noqa: E402
+    actualizar_stock_productos_desde_json,
+    decrementar_stock_producto_desde_args,
+)
 
 
 @dataclass(frozen=True)
@@ -128,6 +138,21 @@ QUERY_SPECS = {
         engine="neo4j",
         handler=obtener_propietarios_sin_consultas_ultimo_anio,
     ),
+    "13": QuerySpec(
+        name="query_13",
+        engine="mongodb",
+        handler=ejecutar_abm_propietario,
+    ),
+    "14": QuerySpec(
+        name="query_14",
+        engine="mongodb",
+        handler=registrar_nueva_consulta_desde_json,
+    ),
+    "15": QuerySpec(
+        name="query_15",
+        engine="mongodb",
+        handler=decrementar_stock_producto_desde_args,
+    ),
 }
 
 
@@ -137,14 +162,19 @@ def print_available_queries() -> None:
 
 
 def main() -> None:
-    if len(sys.argv) not in (2, 3):
-        print("Uso: python3 scripts/run_query.py <numero_query> [argumento]", file=sys.stderr)
-        print("Ejemplos: 1 | 3 P001 | 10 Palermo | 11 05/2026 | 12", file=sys.stderr)
+    if len(sys.argv) < 2:
+        print("Uso: python3 scripts/run_query.py <numero_query> [argumentos]", file=sys.stderr)
+        print(
+            "Ejemplos: 1 | 3 P001 | 10 Palermo | 11 05/2026 | 12 | "
+            "13 alta '{...}' | 14 '{...}' | 15 PRD001 2 | 15 '[...]'",
+            file=sys.stderr,
+        )
         print("Queries disponibles:", file=sys.stderr)
         print_available_queries()
         sys.exit(1)
 
     query_id = sys.argv[1]
+    args = sys.argv[2:]
     spec = QUERY_SPECS.get(query_id)
 
     if spec is None:
@@ -153,22 +183,47 @@ def main() -> None:
         print_available_queries()
         sys.exit(1)
 
-    queries_con_argumento = {"3", "10", "11"}
-    if len(sys.argv) == 3 and query_id not in queries_con_argumento:
+    queries_con_argumento = {"3", "10", "11", "13", "14", "15"}
+    if args and query_id not in queries_con_argumento:
         print("Esta query no recibe argumentos adicionales.", file=sys.stderr)
         sys.exit(1)
 
     try:
         if query_id == "3":
-            id_paciente = sys.argv[2] if len(sys.argv) == 3 else DEFAULT_ID_PACIENTE
+            if len(args) > 1:
+                raise ValueError("La query 3 recibe como maximo un id de paciente.")
+            id_paciente = args[0] if args else DEFAULT_ID_PACIENTE
             resultados = spec.handler(id_paciente)
         elif query_id == "10":
-            sucursal = sys.argv[2] if len(sys.argv) == 3 else DEFAULT_SUCURSAL
+            if len(args) > 1:
+                raise ValueError("La query 10 recibe como maximo una sucursal.")
+            sucursal = args[0] if args else DEFAULT_SUCURSAL
             resultados = spec.handler(sucursal)
         elif query_id == "11":
-            periodo = sys.argv[2] if len(sys.argv) == 3 else None
+            if len(args) > 1:
+                raise ValueError("La query 11 recibe como maximo un periodo MM/YYYY.")
+            periodo = args[0] if args else None
             resultados = spec.handler(periodo)
+        elif query_id == "13":
+            if len(args) != 2:
+                raise ValueError("Uso query 13: 13 <alta|modificacion|baja> '<payload_json>'")
+            resultados = spec.handler(args[0], args[1])
+        elif query_id == "14":
+            if len(args) != 1:
+                raise ValueError("Uso query 14: 14 '<payload_json>'")
+            resultados = spec.handler(args[0])
+        elif query_id == "15":
+            if len(args) == 1:
+                resultados = actualizar_stock_productos_desde_json(args[0])
+            elif len(args) == 2:
+                resultados = spec.handler(args[0], args[1])
+            else:
+                raise ValueError(
+                    "Uso query 15: 15 <id_producto> <cantidad> | 15 '<payload_json>'"
+                )
         else:
+            if args:
+                raise ValueError("Esta query no recibe argumentos adicionales.")
             resultados = spec.handler()
     except PyMongoError as exc:
         print(f"Error al consultar MongoDB: {exc}", file=sys.stderr)
