@@ -26,7 +26,7 @@
       </div>
       <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
         <div class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Tipo</div>
-        <div class="mt-2 text-base font-semibold text-white">{% if spec.parameter_name %}Consulta parametrizable{% else %}Consulta directa{% endif %}</div>
+        <div class="mt-2 text-base font-semibold text-white">{% if spec.payload_label %}Operación con payload{% elif spec.parameter_name %}Consulta parametrizable{% else %}Consulta directa{% endif %}</div>
       </div>
     </div>
   </div>
@@ -42,7 +42,27 @@
       <p class="mt-1 text-sm text-slate-400">Configurá los parámetros necesarios y ejecutá la consulta.</p>
     </div>
 
+    {% if spec.payload_label %}
+    <div class="mb-4 rounded-2xl border border-amber-300/20 bg-amber-300/10 px-4 py-3 text-sm leading-6 text-amber-100">
+      Esta query modifica datos. Revisá el JSON antes de ejecutarla para evitar duplicados o decrementos no deseados.
+    </div>
+    {% endif %}
+
     <div class="flex flex-col gap-4 md:flex-row md:items-end">
+      {% if spec.action_options %}
+      <label class="block md:w-64">
+        <span class="mb-2 block text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">Acción</span>
+        <select
+          name="action"
+          class="w-full rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3 text-sm text-white outline-none ring-0 transition focus:border-emerald-300/40"
+        >
+          {% for action_option in spec.action_options %}
+          <option value="{{ action_option }}" {% if action_option == spec.action_default %}selected{% endif %}>{{ action_option }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      {% endif %}
+
       {% if spec.parameter_name %}
       <label class="block flex-1">
         <span class="mb-2 block text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">{{ spec.parameter_label }}</span>
@@ -63,5 +83,17 @@
         Ejecutar consulta
       </button>
     </div>
+
+    {% if spec.payload_label %}
+    <label class="mt-4 block">
+      <span class="mb-2 block text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">{{ spec.payload_label }}</span>
+      <textarea
+        name="payload"
+        rows="10"
+        placeholder="{{ spec.payload_placeholder }}"
+        class="w-full resize-y rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3 font-mono text-sm leading-6 text-white outline-none ring-0 transition placeholder:text-slate-500 focus:border-emerald-300/40"
+      >{{ spec.payload_default }}</textarea>
+    </label>
+    {% endif %}
   </form>
 </section>

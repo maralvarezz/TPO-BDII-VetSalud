@@ -41,6 +41,15 @@ from src.services.query_11_ingresos_veterinario_mes_actual import (
 from src.services.query_12_propietarios_sin_consultas_ultimo_anio import (
     obtener_propietarios_sin_consultas_ultimo_anio,
 )
+from src.services.query_13_abm_propietarios import (
+    ejecutar_abm_propietario,
+)
+from src.services.query_14_registrar_consulta import (
+    registrar_nueva_consulta_desde_json,
+)
+from src.services.query_15_actualizar_stock import (
+    actualizar_stock_productos_desde_json,
+)
 
 
 @dataclass(frozen=True)
@@ -56,6 +65,11 @@ class QuerySpec:
     parameter_label: str | None = None
     parameter_placeholder: str | None = None
     parameter_default: str | None = None
+    action_options: tuple[str, ...] = ()
+    action_default: str | None = None
+    payload_label: str | None = None
+    payload_placeholder: str | None = None
+    payload_default: str | None = None
 
 
 QUERY_SPECS: dict[str, QuerySpec] = {
@@ -179,11 +193,63 @@ QUERY_SPECS: dict[str, QuerySpec] = {
         language="Cypher",
         handler=obtener_propietarios_sin_consultas_ultimo_anio,
     ),
+    "13": QuerySpec(
+        id="13",
+        name="query_13",
+        title="ABM de propietarios",
+        description="Permite dar de alta, modificar datos o realizar baja lógica de propietarios.",
+        engine="mongodb",
+        language="insertOne / findOneAndUpdate",
+        handler=ejecutar_abm_propietario,
+        action_options=("alta", "modificacion", "baja"),
+        action_default="alta",
+        payload_label="Payload JSON del propietario",
+        payload_placeholder='{"id_propietario":"PR999","nombre":"Ana","apellido":"Gomez","dni":"40999888","email":"ana.gomez@mail.com","telefono":"1133334444","ciudad":"CABA","provincia":"Buenos Aires"}',
+        payload_default='{\n  "id_propietario": "PR999",\n  "nombre": "Ana",\n  "apellido": "Gomez",\n  "dni": "40999888",\n  "email": "ana.gomez@mail.com",\n  "telefono": "1133334444",\n  "ciudad": "CABA",\n  "provincia": "Buenos Aires"\n}',
+    ),
+    "14": QuerySpec(
+        id="14",
+        name="query_14",
+        title="Registrar nueva consulta",
+        description="Inserta una consulta médica validando que el paciente y el veterinario existan y estén activos.",
+        engine="mongodb",
+        language="insertOne con validaciones",
+        handler=registrar_nueva_consulta_desde_json,
+        payload_label="Payload JSON de la consulta",
+        payload_placeholder='{"id_consulta":"C999","id_paciente":"P001","id_vet":"V001","fecha":"2026-05-20","motivo":"Control","diagnostico":"Sin novedades","costo":4500,"estado":"Cerrada"}',
+        payload_default='{\n  "id_consulta": "C999",\n  "id_paciente": "P001",\n  "id_vet": "V001",\n  "fecha": "2026-05-20",\n  "motivo": "Control",\n  "diagnostico": "Sin novedades",\n  "costo": 4500,\n  "estado": "Cerrada"\n}',
+    ),
+    "15": QuerySpec(
+        id="15",
+        name="query_15",
+        title="Actualizar stock farmacéutico",
+        description="Decrementa unidades de uno o varios productos usados, validando existencia y stock suficiente.",
+        engine="mongodb",
+        language="bulkWrite / $inc",
+        handler=actualizar_stock_productos_desde_json,
+        payload_label="Payload JSON de movimientos",
+        payload_placeholder='[{"id_producto":"PRD001","cantidad":2},{"id_producto":"PRD002","cantidad":1}]',
+        payload_default='[\n  {\n    "id_producto": "PRD001",\n    "cantidad": 2\n  }\n]',
+    ),
 }
 
 
-def execute_query(query_id: str, argument: str | None = None) -> Any:
+def execute_query(
+    query_id: str,
+    argument: str | None = None,
+    action: str | None = None,
+    payload: str | None = None,
+) -> Any:
     spec = QUERY_SPECS[query_id]
+    if spec.action_options:
+        action_value = action or spec.action_default
+        payload_value = payload if payload not in {None, ""} else spec.payload_default
+        return spec.handler(action_value, payload_value)
+    if spec.payload_label:
+        payload_value = payload if payload not in {None, ""} else argument
+        if payload_value in {None, ""}:
+            payload_value = spec.payload_default
+        return spec.handler(payload_value)
     if spec.parameter_name is None:
         return spec.handler()
     if argument is None or argument == "":

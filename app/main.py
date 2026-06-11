@@ -263,6 +263,10 @@ def list_queries():
             "language": spec.language,
             "parameter_name": spec.parameter_name,
             "parameter_default": spec.parameter_default,
+            "action_options": spec.action_options,
+            "action_default": spec.action_default,
+            "payload_label": spec.payload_label,
+            "payload_default": spec.payload_default,
         }
         for spec in [QUERY_SPECS[key] for key in sorted(QUERY_SPECS, key=lambda value: int(value))]
     ]
@@ -287,12 +291,17 @@ def query_shell(request: Request, query_id: str):
 
 
 @app.get("/api/queries/{query_id}")
-def run_query_json(query_id: str, argument: Optional[str] = None):
+def run_query_json(
+    query_id: str,
+    argument: Optional[str] = None,
+    action: Optional[str] = None,
+    payload: Optional[str] = None,
+):
     if query_id not in QUERY_SPECS:
         return JSONResponse({"error": f"Query no implementada: {query_id}"}, status_code=404)
 
     try:
-        resultados = execute_query(query_id, argument)
+        resultados = execute_query(query_id, argument, action, payload)
     except (PyMongoError, Neo4jError, ValueError) as exc:
         return JSONResponse({"error": str(exc)}, status_code=400)
 
@@ -304,6 +313,8 @@ def run_query_card(
     request: Request,
     query_id: str,
     argument: Optional[str] = Form(default=None),
+    action: Optional[str] = Form(default=None),
+    payload: Optional[str] = Form(default=None),
 ):
     if query_id not in QUERY_SPECS:
         return HTMLResponse(
@@ -313,7 +324,7 @@ def run_query_card(
 
     spec = QUERY_SPECS[query_id]
     try:
-        resultados = execute_query(query_id, argument)
+        resultados = execute_query(query_id, argument, action, payload)
         resultados_ui = serialize_for_ui(resultados)
         graph_data = build_graph_data(query_id, resultados_ui)
         payload_json = json.dumps(resultados, indent=2, ensure_ascii=False, default=json_default)
