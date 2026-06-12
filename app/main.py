@@ -243,9 +243,9 @@ def build_graph_data(query_id: str, resultados_ui):
 def home(request: Request):
     query_specs = [QUERY_SPECS[key] for key in sorted(QUERY_SPECS, key=lambda value: int(value))]
     return templates.TemplateResponse(
+        request,
         "index.html",
         {
-            "request": request,
             "query_specs": query_specs,
         },
     )
@@ -282,9 +282,9 @@ def query_shell(request: Request, query_id: str):
 
     spec = QUERY_SPECS[query_id]
     return templates.TemplateResponse(
+        request,
         "query_shell_fragment.html",
         {
-            "request": request,
             "spec": spec,
         },
     )
@@ -330,9 +330,9 @@ def run_query_card(
         payload_json = json.dumps(resultados, indent=2, ensure_ascii=False, default=json_default)
     except (PyMongoError, Neo4jError, ValueError) as exc:
         return templates.TemplateResponse(
+            request,
             "result_fragment.html",
             {
-                "request": request,
                 "spec": spec,
                 "error": str(exc),
                 "resultados": None,
@@ -344,9 +344,9 @@ def run_query_card(
         )
 
     return templates.TemplateResponse(
+        request,
         "result_fragment.html",
         {
-            "request": request,
             "spec": spec,
             "error": None,
             "resultados": resultados,
