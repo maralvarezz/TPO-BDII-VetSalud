@@ -20,6 +20,8 @@ docker compose up -d
 python3 -m pip install -r requirements.txt
 ```
 
+Si usas un entorno virtual, activalo antes de instalar las dependencias y de ejecutar el proyecto.
+
 4. Cargar datos en MongoDB:
 
 ```bash
@@ -85,6 +87,21 @@ El runner queda preparado para consultas sobre:
 - `Neo4j`
 
 Cada consulta se registra una sola vez en `scripts/run_query.py`, indicando que motor usa y que funcion ejecuta.
+
+## Interfaz web
+
+Tambien hay una interfaz web inicial sobre FastAPI:
+
+```bash
+python3 -m uvicorn app.main:app --reload
+```
+
+Si queres usar el comando `uvicorn` directo, primero tenes que tener las dependencias instaladas en el entorno activo.
+
+Luego se puede abrir:
+
+- `http://127.0.0.1:8000/`
+- `http://127.0.0.1:8000/docs`
 
 ## Variables de entorno
 

@@ -1,0 +1,99 @@
+<section class="space-y-5" data-selected-query="{{ spec.id }}">
+  <div class="rounded-[1.75rem] border border-white/10 bg-slate-950/40 p-6">
+    <div class="mb-5 flex flex-wrap items-center gap-3">
+      <span class="rounded-full px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-slate-200 bg-white/5">
+        Query {{ spec.id }}
+      </span>
+      <span class="rounded-full px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] {% if spec.engine == 'mongodb' %}bg-emerald-400/15 text-emerald-200{% else %}bg-sky-400/15 text-sky-200{% endif %}">
+        {{ spec.engine }}
+      </span>
+      <span class="rounded-full bg-white/5 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-slate-300">
+        {{ spec.language }}
+      </span>
+    </div>
+
+    <h3 class="text-3xl font-black text-white">{{ spec.title }}</h3>
+    <p class="mt-3 max-w-3xl text-sm leading-7 text-slate-300">{{ spec.description }}</p>
+
+    <div class="mt-6 grid gap-4 md:grid-cols-3">
+      <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+        <div class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Motor</div>
+        <div class="mt-2 text-base font-semibold text-white">{{ spec.engine }}</div>
+      </div>
+      <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+        <div class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Lenguaje</div>
+        <div class="mt-2 text-base font-semibold text-white">{{ spec.language }}</div>
+      </div>
+      <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+        <div class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Tipo</div>
+        <div class="mt-2 text-base font-semibold text-white">{% if spec.payload_label %}Operación con payload{% elif spec.parameter_name %}Consulta parametrizable{% else %}Consulta directa{% endif %}</div>
+      </div>
+    </div>
+  </div>
+
+  <form
+    class="rounded-[1.75rem] border border-white/10 bg-white/5 p-6"
+    hx-post="/ui/queries/{{ spec.id }}"
+    hx-target="#query-result"
+    hx-indicator="#result-loading"
+  >
+    <div class="mb-4">
+      <h4 class="text-xl font-bold text-white">Ejecución</h4>
+      <p class="mt-1 text-sm text-slate-400">Configurá los parámetros necesarios y ejecutá la consulta.</p>
+    </div>
+
+    {% if spec.payload_label %}
+    <div class="mb-4 rounded-2xl border border-amber-300/20 bg-amber-300/10 px-4 py-3 text-sm leading-6 text-amber-100">
+      Esta query modifica datos. Revisá el JSON antes de ejecutarla para evitar duplicados o decrementos no deseados.
+    </div>
+    {% endif %}
+
+    <div class="flex flex-col gap-4 md:flex-row md:items-end">
+      {% if spec.action_options %}
+      <label class="block md:w-64">
+        <span class="mb-2 block text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">Acción</span>
+        <select
+          name="action"
+          class="w-full rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3 text-sm text-white outline-none ring-0 transition focus:border-emerald-300/40"
+        >
+          {% for action_option in spec.action_options %}
+          <option value="{{ action_option }}" {% if action_option == spec.action_default %}selected{% endif %}>{{ action_option }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      {% endif %}
+
+      {% if spec.parameter_name %}
+      <label class="block flex-1">
+        <span class="mb-2 block text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">{{ spec.parameter_label }}</span>
+        <input
+          type="text"
+          name="argument"
+          value="{{ spec.parameter_default }}"
+          placeholder="{{ spec.parameter_placeholder }}"
+          class="w-full rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3 text-sm text-white outline-none ring-0 transition placeholder:text-slate-500 focus:border-emerald-300/40"
+        />
+      </label>
+      {% endif %}
+
+      <button
+        type="submit"
+        class="inline-flex items-center justify-center rounded-2xl px-5 py-3 text-sm font-bold text-white transition {% if spec.engine == 'mongodb' %}bg-emerald-500 hover:bg-emerald-400{% else %}bg-sky-500 hover:bg-sky-400{% endif %}"
+      >
+        Ejecutar consulta
+      </button>
+    </div>
+
+    {% if spec.payload_label %}
+    <label class="mt-4 block">
+      <span class="mb-2 block text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">{{ spec.payload_label }}</span>
+      <textarea
+        name="payload"
+        rows="10"
+        placeholder="{{ spec.payload_placeholder }}"
+        class="w-full resize-y rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3 font-mono text-sm leading-6 text-white outline-none ring-0 transition placeholder:text-slate-500 focus:border-emerald-300/40"
+      >{{ spec.payload_default }}</textarea>
+    </label>
+    {% endif %}
+  </form>
+</section>

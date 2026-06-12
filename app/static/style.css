@@ -1,0 +1,97 @@
+body {
+  font-family: "Inter", "Segoe UI", sans-serif;
+}
+
+.query-menu-item {
+  background: rgba(2, 6, 23, 0.55);
+}
+
+.query-menu-item--mongodb {
+  border-color: rgba(16, 185, 129, 0.22);
+  box-shadow: inset 0 0 0 1px rgba(16, 185, 129, 0.04);
+}
+
+.query-menu-item--mongodb:hover {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(52, 211, 153, 0.34);
+}
+
+.query-menu-item--neo4j {
+  border-color: rgba(14, 165, 233, 0.22);
+  box-shadow: inset 0 0 0 1px rgba(14, 165, 233, 0.04);
+}
+
+.query-menu-item--neo4j:hover {
+  background: rgba(14, 165, 233, 0.12);
+  border-color: rgba(125, 211, 252, 0.34);
+}
+
+.htmx-indicator {
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+
+.htmx-request .htmx-indicator,
+.htmx-request.htmx-indicator {
+  opacity: 1;
+}
+
+.result-tab {
+  color: rgb(148 163 184);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid transparent;
+}
+
+.result-tab.active {
+  color: white;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 10px 40px rgba(16, 185, 129, 0.08);
+}
+
+.result-panel {
+  min-height: 420px;
+}
+
+.query-menu-item.is-active {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.28), rgba(14, 165, 233, 0.2));
+  border-color: rgba(125, 211, 252, 0.35);
+  color: white;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.06) inset,
+    0 14px 40px rgba(14, 165, 233, 0.12);
+}
+
+.query-menu-item--mongodb.is-active {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.28), rgba(5, 150, 105, 0.22));
+  border-color: rgba(110, 231, 183, 0.4);
+  box-shadow:
+    0 0 0 1px rgba(16, 185, 129, 0.08) inset,
+    0 14px 40px rgba(16, 185, 129, 0.18);
+}
+
+.query-menu-item--neo4j.is-active {
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.28), rgba(59, 130, 246, 0.2));
+  border-color: rgba(125, 211, 252, 0.45);
+  box-shadow:
+    0 0 0 1px rgba(14, 165, 233, 0.08) inset,
+    0 14px 40px rgba(14, 165, 233, 0.18);
+}
+
+.record-chip.is-active,
+.record-nav-button:hover {
+  background: rgba(16, 185, 129, 0.18);
+  border-color: rgba(52, 211, 153, 0.3);
+  color: white;
+}
+
+.graph-canvas {
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(148, 163, 184, 0.12) 1px, transparent 0);
+  background-size: 22px 22px;
+}
+
+pre {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.5) transparent;
+}
